@@ -50,4 +50,21 @@ jobs:
         git commit -am "Increment patch version to $NEW_VERSION"
         git push https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
  
+ 
+ 
+    - name: Build Docker image
+      run: |
+        docker build -t simple-java-maven-app:latest .
+
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Tag Docker image
+      run: |
+        docker tag simple-java-maven-app:latest ${{ secrets.DOCKERHUB_USERNAME }}/simple-java-maven-app:latest
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-java-maven-app:latest
+
 
