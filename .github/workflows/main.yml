@@ -13,11 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Get changed files
-      id: getfile
-      uses: jitterbit/get-changed-action@v1
-
-
 
     - name: Increment patch version
       run: |
