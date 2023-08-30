@@ -69,5 +69,21 @@ jobs:
     - name: Push Docker image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-java-maven-app:latest
+        
+    - name: Deploy to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      run: |
+        echo "$PRIVATE_KEY" > deploy_key.pem
+        chmod 600 deploy_key.pem
+        scp -i deploy_key.pem -o StrictHostKeyChecking=no ./scripts/deployment-script.sh ubuntu@3.70.154.54:/tmp/
+        ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@3.70.154.54 "/tmp/deployment-script.sh"
+        rm -f deploy_key.pem    
+        
+        
+        
+        
+        
+        
 
 
