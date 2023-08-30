@@ -13,12 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-
     - name: Increment patch version
       run: |
-        # Check for changes
-        git fetch
-        CHANGED_FILES=$(git diff --name-only origin/master)
+        # Check for changes compared to the previous commit
+        CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
         if [[ -z "$CHANGED_FILES" ]]; then
           echo "No changes detected."
           exit 0
@@ -35,15 +33,10 @@ jobs:
         # Update pom.xml with the new version
         sed -i "s/<version>$CURRENT_VERSION-SNAPSHOT<\/version>/<version>$NEW_VERSION<\/version>/" pom.xml
 
-
-
-
-
     - name: Commit updated version
       run: |
-        # Check for changes
-        git fetch
-        CHANGED_FILES=$(git diff --name-only origin/master)
+        # Check for changes compared to the previous commit
+        CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
         if [[ -z "$CHANGED_FILES" ]]; then
           echo "No changes to commit."
           exit 0
@@ -52,5 +45,5 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -am "Increment patch version to $NEW_VERSION"
-        git push
+        git push 
 
